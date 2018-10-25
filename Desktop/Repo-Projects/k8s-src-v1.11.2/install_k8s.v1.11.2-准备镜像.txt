@@ -1,0 +1,5 @@
+获取镜像v1.11.1
+images=$(docker images|grep gcr.io |awk '{print $1 ":" $2}');
+#保存镜像
+for kimage in $images ; do docker save -o ${kimage##*/}.tar $kimage ;  done
+

@@ -1,0 +1,139 @@
+1.初始化环境
+## 主机名
+
+设置永久主机名称，然后重新登录:
+
+``` bash
+$ sudo hostnamectl set-hostname kube-node1 # 将 kube-node1 替换为当前主机名
+```
++ 设置的主机名保存在 `/etc/hostname` 文件中；
+
+修改每台机器的 `/etc/hosts` 文件，添加主机名和 IP 的对应关系：
+
+
+在每台机器上添加 docker 账户，将 k8s 账户添加到 docker 组中，同时配置 dockerd 参数：
+
+``` bash
+$ sudo useradd -m docker
+$ sudo gpasswd -a k8s docker
+$ sudo mkdir -p  /etc/docker/
+$ cat /etc/docker/daemon.json
+{
+    "registry-mirrors": ["private.docker.hub:5000"],
+    "max-concurrent-downloads": 20
+}
+
+
+## 安装依赖包
+
+在每台机器上安装依赖包：
+
+CentOS:
+
+``` bash
+$ sudo yum install -y epel-release
+$ sudo yum install -y conntrack ipvsadm ipset jq sysstat curl iptables libseccomp
+```
+
+Ubuntu:
+
+``` bash
+$ sudo apt-get install -y conntrack ipvsadm ipset jq sysstat curl iptables libseccomp
+```
++ ipvs 依赖 ipset；
+
+## 关闭防火墙
+
+在每台机器上关闭防火墙：
+
+``` bash
+$ sudo systemctl stop firewalld
+$ sudo systemctl disable firewalld
+$ sudo iptables -F && sudo iptables -X && sudo iptables -F -t nat && sudo iptables -X -t nat
+$ sudo sudo iptables -P FORWARD ACCEPT
+```
+vi /etc/sysconfig/iptables
+
+添加：
+
+-A INPUT -p udp -m udp --sport 123 -j ACCEPT
+
+## 关闭 swap 分区
+
+如果开启了 swap 分区，kubelet 会启动失败(可以通过将参数 --fail-swap-on 设置为 false 来忽略 swap on)，故需要在每台机器上关闭 swap 分区：
+
+``` bash
+$ sudo swapoff -a
+```
+
+为了防止开机自动挂载 swap 分区，可以注释 `/etc/fstab` 中相应的条目：
+swapoff -a
+cp -p /etc/fstab /etc/fstab.bak$(date '+%Y%m%d%H%M%S')
+sed -i "s/\/dev\/mapper\/rhel-swap/\#\/dev\/mapper\/rhel-swap/g" /etc/fstab
+sed -i "s/\/dev\/mapper\/centos-swap/\#\/dev\/mapper\/centos-swap/g" /etc/fstab
+
+``` bash
+$ sudo sed -i '/swap /s/^\(.*\)$/#\1/g' /etc/fstab
+```
+
+## 关闭 SELinux
+
+关闭 SELinux，否则后续 K8S 挂载目录时可能报错 `Permission denied`：
+
+``` bash
+$ sudo setenforce 0
+$ grep SELINUX /etc/selinux/config 
+SELINUX=disabled
+```
++ 修改配置文件，永久生效；
+
+## 关闭 dnsmasq
+
+linux 系统开启了 dnsmasq 后(如 GUI 环境)，将系统 DNS Server 设置为 127.0.0.1，这会导致 docker 容器无法解析域名，需要关闭它：
+
+``` bash
+$ sudo service dnsmasq stop
+$ sudo systemctl disable dnsmasq
+```
+
+## 设置系统参数
+
+``` bash
+$ cat > kubernetes.conf <<EOF
+net.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+vm.swappiness=0
+vm.overcommit_memory=1
+vm.panic_on_oom=0
+fs.inotify.max_user_watches=89100
+EOF
+$ sudo cp kubernetes.conf  /etc/sysctl.d/kubernetes.conf
+$ sudo sysctl -p /etc/sysctl.d/kubernetes.conf
+
+
+## 加载内核模块
+
+``` bash
+$ sudo modprobe br_netfilter
+$ sudo modprobe ip_vs
+```
+
+## 设置系统时区
+
+``` bash
+$ # 调整系统 TimeZone
+$ sudo timedatectl set-timezone Asia/Shanghai
+
+$ # 将当前的 UTC 时间写入硬件时钟
+$ sudo timedatectl set-local-rtc 0
+
+$ # 重启依赖于系统时间的服务
+$ sudo systemctl restart rsyslog 
+$ sudo systemctl restart crond
+```
+
+
+
+
+
