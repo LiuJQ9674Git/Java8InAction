@@ -1,0 +1,39 @@
+version: "3.6"
+
+#pinpoint-agent image will not usually be used alone
+services:
+  pinpoint-agent:
+    #Compose 会利用它自动构建镜像，该值可以是一个路径，也可以是一个对象，用于指定 Dockerfile 参数
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PINPOINT_VERSION=${PINPOINT_VERSION}
+
+    container_name: "${PINPOINT_AGENT_NAME}"
+    image: "pinpointdocker/pinpoint-agent:${PINPOINT_VERSION}"
+
+    restart: unless-stopped
+
+    volumes:
+      - pinpoint-agent
+    #环境变量配置，可以用数组或字典两种方式  
+    environment:
+      - COLLECTOR_IP=${COLLECTOR_IP}
+      - COLLECTOR_TCP_PORT=${COLLECTOR_TCP_PORT}
+      - COLLECTOR_STAT_PORT=${COLLECTOR_STAT_PORT}
+      - COLLECTOR_SPAN_PORT=${COLLECTOR_SPAN_PORT}
+      - PROFILER_SAMPLING_RATE=${PROFILER_SAMPLING_RATE}
+      - DEBUG_LEVEL=${AGENT_DEBUG_LEVEL}
+    networks:
+      - pinpoint
+
+#networks:
+#  default:
+#    external:
+#      name: pinpoint
+
+networks:
+  pinpoint:
+    driver: bridge
+

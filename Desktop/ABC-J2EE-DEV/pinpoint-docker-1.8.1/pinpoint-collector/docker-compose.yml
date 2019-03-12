@@ -1,0 +1,52 @@
+version: "3.6"
+
+services:
+  pinpoint-collector:
+    build:
+      #它的值可以是Dockerfile的路径，或者是指向git仓库的url。
+      #当提供的值是相对路径时，它被解释Compose文件位置的相对路径。
+      #目录里的信息会被当做构建内容 发送到Docker守护进程。
+      context: .
+      #撰写将使用一个备用文件来构建。 还必须指定构建路径
+      dockerfile: Dockerfile
+      #添加构建参数，它们是只有在构建过程中才可访问的环境变量。
+      #指定build字段下的参数args，可以mapping或list
+      #指定build参数时，可以忽略该值，在这种情况下，构建时其值为运行Compose的环境中的值。
+      args:
+        - PINPOINT_VERSION=${PINPOINT_VERSION}
+
+    #指定自定义容器名称，而不是生成的默认名称。
+    #由于Docker容器名称必须是唯一的，因此如果指定了自定义名称，
+    #则无法将服务扩展到1个容器之外。 尝试这样做会导致错误。
+    container_name: "${PINPOINT_COLLECTOR_NAME}"
+    #如果指定image字段来build，则Compose使用image中指定的webapp和tag（可选）命名构建的image
+    #这里从./dir构建了一个镜像名为pinpoint-collector，并打上标记为${PINPOINT_VERSION}的镜像。
+    image: "pinpointdocker/pinpoint-collector:${PINPOINT_VERSION}"
+
+    restart: always
+    #公开端口，而不将其发布到主机-它们只能访问链接服务，只能指定内部端口。
+    expose:
+      - "9994"
+      - "9995"
+      - "9996"
+    #公开端口。 指定两个端口（HOST：CONTAINER），或只指定容器端口（将选择随机主机端口）。  
+    ports:
+      - "${COLLECTOR_RECEIVER_BASE_PORT:-9994}:9994"
+      - "${COLLECTOR_RECEIVER_STAT_UDP_PORT:-9995}:9995/tcp"
+      - "${COLLECTOR_RECEIVER_SPAN_UDP_PORT:-9996}:9996/tcp"
+      - "${COLLECTOR_RECEIVER_STAT_UDP_PORT:-9995}:9995/udp"
+      - "${COLLECTOR_RECEIVER_SPAN_UDP_PORT:-9996}:9996/udp"
+    #
+    environment:
+      - CLUSTER_ENABLE=${CLUSTER_ENABLE}
+      - CLUSTER_ZOOKEEPER_ADDRESS=${CLUSTER_ZOOKEEPER_ADDRESS}
+      - HBASE_HOST=${HBASE_HOST}
+      - HBASE_PORT=${HBASE_PORT}
+      - FLINK_CLUSTER_ENABLE=${FLINK_CLUSTER_ENABLE}
+      - FLINK_CLUSTER_ZOOKEEPER_ADDRESS=${FLINK_CLUSTER_ZOOKEEPER_ADDRESS}
+      - DEBUG_LEVEL=${COLLECTOR_DEBUG_LEVEL}
+
+#要加入的网络
+networks:
+  pinpoint:
+    driver: bridge
