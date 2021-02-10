@@ -20,16 +20,19 @@ public class FilteringApples{
         System.out.println(heavyApples);
         
         // [Apple{color='green', weight=80}, Apple{color='green', weight=155}]
-        List<Apple> greenApples2 = filterApples(inventory, (Apple a) -> "green".equals(a.getColor()));
+        List<Apple> greenApples2 = filterApples(inventory,
+                (Apple a) -> "green".equals(a.getColor()));
         System.out.println(greenApples2);
         
         // [Apple{color='green', weight=155}]
-        List<Apple> heavyApples2 = filterApples(inventory, (Apple a) -> a.getWeight() > 150);
+        List<Apple> heavyApples2 = filterApples(inventory,
+                (Apple a) -> a.getWeight() > 150);
         System.out.println(heavyApples2);
         
         // []
-        List<Apple> weirdApples = filterApples(inventory, (Apple a) -> a.getWeight() < 80 || 
-                                                                       "brown".equals(a.getColor()));
+        List<Apple> weirdApples = filterApples(inventory,
+                (Apple a) -> a.getWeight() < 80 ||
+                  "brown".equals(a.getColor()));
         System.out.println(weirdApples);
     }
 
@@ -61,7 +64,8 @@ public class FilteringApples{
         return apple.getWeight() > 150;
     }
 
-    public static List<Apple> filterApples(List<Apple> inventory, Predicate<Apple> p){
+    public static List<Apple> filterApples(List<Apple> inventory,
+                                           Predicate<Apple> p){
         List<Apple> result = new ArrayList<>();
         for(Apple apple : inventory){
             if(p.test(apple)){

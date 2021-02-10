@@ -23,7 +23,8 @@ import java.util.function.Function;
 
 public class TaxCalculator {
 
-    public static double calculate( Order order, boolean useRegional, boolean useGeneral, boolean useSurcharge ) {
+    public static double calculate( Order order, boolean useRegional,
+                                    boolean useGeneral, boolean useSurcharge ) {
         double value = order.getValue();
         if (useRegional) value = Tax.regional(value);
         if (useGeneral) value = Tax.general(value);

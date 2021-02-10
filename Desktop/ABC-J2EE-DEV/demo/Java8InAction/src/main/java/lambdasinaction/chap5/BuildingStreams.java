@@ -66,7 +66,10 @@ public class BuildingStreams {
               };
          IntStream.generate(fib).limit(10).forEach(System.out::println);
 
-         long uniqueWords = Files.lines(Paths.get("lambdasinaction/chap5/data.txt"), Charset.defaultCharset())
+         long uniqueWords = Files.lines(Paths.get("/Users/liujianqiang/Desktop/" +
+                         "ABC-J2EE-DEV/demo/Java8InAction/src/" +
+                         "main/resources/lambdasinaction/chap5/data.txt"),
+                 Charset.defaultCharset())
                                  .flatMap(line -> Arrays.stream(line.split(" ")))
                                  .distinct()
                                  .count();

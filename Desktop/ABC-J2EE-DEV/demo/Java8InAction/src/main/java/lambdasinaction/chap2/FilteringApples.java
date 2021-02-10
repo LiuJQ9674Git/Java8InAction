@@ -6,7 +6,8 @@ public class FilteringApples{
 
 	public static void main(String ... args){
 
-		List<Apple> inventory = Arrays.asList(new Apple(80,"green"), new Apple(155, "green"), new Apple(120, "red"));	
+		List<Apple> inventory = Arrays.asList(new Apple(80,"green"),
+				new Apple(155, "green"), new Apple(120, "red"));
 
 		// [Apple{color='green', weight=80}, Apple{color='green', weight=155}]
 		List<Apple> greenApples = filterApplesByColor(inventory, "green");
