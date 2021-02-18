@@ -17,6 +17,7 @@ public class FilteringApples{
 		List<Apple> redApples = filterApplesByColor(inventory, "red");
 		System.out.println(redApples);
 
+		//filter行为参数化，策略模式
 		// [Apple{color='green', weight=80}, Apple{color='green', weight=155}]
 		List<Apple> greenApples2 = filter(inventory, new AppleColorPredicate());
 		System.out.println(greenApples2);
@@ -113,6 +114,7 @@ public class FilteringApples{
 		}
 	}
 
+	//------------------行为参数化结构-------------------------------//
 	interface ApplePredicate{
 		public boolean test(Apple a);
 	}
