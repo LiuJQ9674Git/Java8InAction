@@ -18,7 +18,9 @@ public class ChainOfResponsibilityMain {
                 (String text) -> "From Raoul, Mario and Alan: " + text;
         UnaryOperator<String> spellCheckerProcessing =
                 (String text) -> text.replaceAll("labda", "lambda");
+
         Function<String, String> pipeline = headerProcessing.andThen(spellCheckerProcessing);
+
         String result2 = pipeline.apply("Aren't labdas really sexy?!!");
         System.out.println(result2);
     }

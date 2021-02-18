@@ -1,6 +1,8 @@
 package lambdasinaction.chap3;
 
 import java.io.*;
+import java.net.URL;
+
 public class ExecuteAround {
 
 	public static void main(String ...args) throws IOException{
@@ -11,6 +13,7 @@ public class ExecuteAround {
 
         System.out.println("---");
 
+        //函数式编程
 		String oneLine = processFile((BufferedReader b) -> b.readLine());
 		System.out.println(oneLine);
 
@@ -20,17 +23,20 @@ public class ExecuteAround {
 	}
 
     public static String processFileLimited() throws IOException {
+		URL path=ExecuteAround.class.getResource("/lambdasinaction/chap3/data.txt");
+		String name=path.getFile();
         try (BufferedReader br =
-                     new BufferedReader(new FileReader(
-                     		"lambdasinaction/chap3/data.txt"))) {
+                     new BufferedReader(new FileReader(name))) {
             return br.readLine();
         }
     }
 
-
+	//----------------------------函数式编程--------------------------
 	public static String processFile(BufferedReaderProcessor p) throws IOException {
+		String name=ExecuteAround.class.getResource(
+				"/lambdasinaction/chap3/data.txt").getFile();
 		try(BufferedReader br =
-					new BufferedReader(new FileReader("lambdasinaction/chap3/data.txt"))){
+					new BufferedReader(new FileReader(name))){
 			return p.process(br);
 		}
 

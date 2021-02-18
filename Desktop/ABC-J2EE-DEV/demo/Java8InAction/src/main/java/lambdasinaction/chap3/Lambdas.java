@@ -1,6 +1,10 @@
 package lambdasinaction.chap3;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.IntSupplier;
 
 public class Lambdas {
 	public static void main(String ...args){
@@ -27,6 +31,43 @@ public class Lambdas {
 		// Apple{color='green', weight=155}]
 		inventory.sort(c);
 		System.out.println(inventory);
+
+		IntSupplier f=() -> 10;
+
+
+		processNullNull(()->System.out.println("入参出参为空"));
+		String str=processNullString(()->"入参为空，返回为串");
+		System.out.println(str);
+
+		str=processIntString(10,(i)-> {return "入参出参为空"+i;});
+		System.out.println(str);
+		str=processIntString(20,(i)->  "入参出参为空"+i);
+		System.out.println(str);
+	}
+
+	public static String processIntString(int i,IntString ns){
+		return ns.process(i);
+	}
+
+	public interface IntString{
+		public String process(Integer i);
+	}
+
+	public static String processNullString(NullString ns){
+		return ns.process();
+	}
+
+	public interface NullString{
+		public String process();
+	}
+
+	public static void processNullNull(NullNull nn){
+		nn.process();
+
+	}
+
+	public interface NullNull{
+		public void process();
 	}
 
 	public static List<Apple> filter(List<Apple> inventory,
@@ -38,7 +79,12 @@ public class Lambdas {
 			}
 		}
 		return result;
-	}   
+	}
+
+
+	interface ApplePredicate{
+		public boolean test(Apple a);
+	}
 
 	public static class Apple {
 		private int weight = 0;
@@ -73,7 +119,4 @@ public class Lambdas {
 		}
 	}
 
-	interface ApplePredicate{
-		public boolean test(Apple a);
-	}
 }

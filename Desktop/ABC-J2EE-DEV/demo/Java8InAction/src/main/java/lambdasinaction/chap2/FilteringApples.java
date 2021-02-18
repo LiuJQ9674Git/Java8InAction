@@ -40,6 +40,7 @@ public class FilteringApples{
 
 	}
 
+	//
 	public static List<Apple> filterGreenApples(List<Apple> inventory){
 		List<Apple> result = new ArrayList<>();
 		for(Apple apple: inventory){
@@ -71,6 +72,7 @@ public class FilteringApples{
 	}
 
 
+	//------------------------行为参数化-----------------------------//
 	public static List<Apple> filter(List<Apple> inventory, ApplePredicate p){
 		List<Apple> result = new ArrayList<>();
 		for(Apple apple : inventory){
@@ -79,7 +81,30 @@ public class FilteringApples{
 			}
 		}
 		return result;
-	}       
+	}
+
+	//------------------行为参数化结构-------------------------------//
+	interface ApplePredicate{
+		public boolean test(Apple a);
+	}
+
+	static class AppleWeightPredicate implements ApplePredicate{
+		public boolean test(Apple apple){
+			return apple.getWeight() > 150;
+		}
+	}
+	static class AppleColorPredicate implements ApplePredicate{
+		public boolean test(Apple apple){
+			return "green".equals(apple.getColor());
+		}
+	}
+
+	static class AppleRedAndHeavyPredicate implements ApplePredicate{
+		public boolean test(Apple apple){
+			return "red".equals(apple.getColor())
+					&& apple.getWeight() > 150;
+		}
+	}
 
 	public static class Apple {
 		private int weight = 0;
@@ -114,26 +139,4 @@ public class FilteringApples{
 		}
 	}
 
-	//------------------行为参数化结构-------------------------------//
-	interface ApplePredicate{
-		public boolean test(Apple a);
-	}
-
-	static class AppleWeightPredicate implements ApplePredicate{
-		public boolean test(Apple apple){
-			return apple.getWeight() > 150; 
-		}
-	}
-	static class AppleColorPredicate implements ApplePredicate{
-		public boolean test(Apple apple){
-			return "green".equals(apple.getColor());
-		}
-	}
-
-	static class AppleRedAndHeavyPredicate implements ApplePredicate{
-		public boolean test(Apple apple){
-			return "red".equals(apple.getColor()) 
-					&& apple.getWeight() > 150; 
-		}
-	}
 }
