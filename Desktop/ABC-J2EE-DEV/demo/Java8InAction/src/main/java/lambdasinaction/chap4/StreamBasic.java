@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import static lambdasinaction.chap4.Dish.menu;
@@ -19,6 +20,12 @@ public class StreamBasic {
         // Java 8
         getLowCaloricDishesNamesInJava8(Dish.menu).forEach(System.out::println);
 
+        //
+        Map<Dish.Type, List<Dish>> dishesByType =
+                menu.stream().collect(groupingBy(Dish::getType));
+        //{OTHER=[french fries, rice, season fruit, pizza], MEAT=[pork, beef, chicken],
+        // FISH=[prawns, salmon]}
+        System.out.println("dishesByType:\t"+ dishesByType);
     }
 
     public static List<String> getLowCaloricDishesNamesInJava7(List<Dish> dishes){
