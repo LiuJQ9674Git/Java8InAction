@@ -26,6 +26,16 @@ public class StreamBasic {
         //{OTHER=[french fries, rice, season fruit, pizza], MEAT=[pork, beef, chicken],
         // FISH=[prawns, salmon]}
         System.out.println("dishesByType:\t"+ dishesByType);
+
+        //从menu获得流
+        List<String> threeHighCaloricDishNames =
+                menu.stream()//建立操作流水线
+                        .filter(d -> d.getCalories() > 300)//首先选出高热量的 菜肴
+                        .map(Dish::getName)//获取菜名
+                        .limit(3)//只选择头三个
+                        .collect(toList());
+        //[pork, beef, chicken]
+        System.out.println("threeHighCaloricDishNames:\t"+threeHighCaloricDishNames);
     }
 
     public static List<String> getLowCaloricDishesNamesInJava7(List<Dish> dishes){
