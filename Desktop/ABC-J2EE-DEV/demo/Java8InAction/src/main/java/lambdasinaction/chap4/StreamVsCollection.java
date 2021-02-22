@@ -15,7 +15,7 @@ public class StreamVsCollection {
         //Lambdas
         //In
         //Action
-        
+
         //Exception in thread "main" java.lang.IllegalStateException:
         // stream has already been operated upon or closed
         // 只能变量一次，第二次抛出异常

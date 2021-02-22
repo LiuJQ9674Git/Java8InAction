@@ -4,6 +4,7 @@ import lambdasinaction.chap4.*;
 
 import java.util.*;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static lambdasinaction.chap4.Dish.menu;
 
 public class Mapping{
@@ -29,15 +30,26 @@ public class Mapping{
                  .distinct()
                  .forEach(System.out::println);
 
+        words = Arrays.asList("Hello", "World","Hello", "World");
+        List<String> result= words.stream()
+                .distinct().collect(toList());
+
+        System.out.println(result);
+        Set<String> resultSet= words.stream().collect(toSet());
+        System.out.println(resultSet);
+
+        words = Arrays.asList("Hello", "World","Hello12", "World1234");
+        int resultLegth= words.stream().mapToInt(str->str.length()).max().getAsInt();
+        System.out.println("resultLegth:\t"+resultLegth);
         // flatMap
         List<Integer> numbers1 = Arrays.asList(1,2,3,4,5);
         List<Integer> numbers2 = Arrays.asList(6,7,8);
-        List<int[]> pairs =
-                        numbers1.stream()
+        List<int[]> pairs =//Stream<Integer> Stream<int[]>
+                        numbers1.stream() //Stream<Integer>
                                 .flatMap((Integer i) -> numbers2.stream()
                                                        .map((Integer j) -> new int[]{i, j})
-                                 )
-                                .filter(pair -> (pair[0] + pair[1]) % 3 == 0)
+                                 ) //Stream<int[]>
+                                .filter(pair -> (pair[0] + pair[1]) % 3 == 0) //Stream<int[]>
                                 .collect(toList());
         pairs.forEach(pair -> System.out.println("(" + pair[0] + ", " + pair[1] + ")"));
     }

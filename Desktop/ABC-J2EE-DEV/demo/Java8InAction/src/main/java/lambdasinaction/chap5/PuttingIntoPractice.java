@@ -1,7 +1,5 @@
 package lambdasinaction.chap5;
 
-import lambdasinaction.chap5.*;
-
 import java.util.*;
 
 import static java.util.Comparator.comparing;
@@ -29,7 +27,7 @@ public class PuttingIntoPractice{
                                                .filter(transaction -> transaction.getYear() == 2011)
                                                .sorted(comparing(Transaction::getValue))
                                                .collect(toList());
-        System.out.println(tr2011);
+        System.out.println("tr2011:\n"+tr2011);
         
         // Query 2: What are all the unique cities where the traders work?
         List<String> cities = 
@@ -37,7 +35,7 @@ public class PuttingIntoPractice{
                         .map(transaction -> transaction.getTrader().getCity())
                         .distinct()
                         .collect(toList());
-        System.out.println(cities);
+        System.out.println("cities\n"+cities);
 
         // Query 3: Find all traders from Cambridge and sort them by name.
         
@@ -48,7 +46,7 @@ public class PuttingIntoPractice{
                         .distinct()
                         .sorted(comparing(Trader::getName))
                         .collect(toList());
-        System.out.println(traders);
+        System.out.println("traders:\n"+traders);
         
         
         // Query 4: Return a string of all traders’ names sorted alphabetically.
@@ -59,7 +57,7 @@ public class PuttingIntoPractice{
                         .distinct()
                         .sorted()
                         .reduce("", (n1, n2) -> n1 + n2);
-        System.out.println(traderStr);
+        System.out.println("traderStr:\n"+traderStr);
         
         // Query 5: Are there any trader based in Milan?
         
@@ -69,15 +67,17 @@ public class PuttingIntoPractice{
                                                             .getCity()
                                                             .equals("Milan")
                                  );
-        System.out.println(milanBased);
+        System.out.println("milanBased:\n"+milanBased);
         
         
         // Query 6: Update all transactions so that the traders from Milan are set to Cambridge.
+        String cityName="Cambridge";
         transactions.stream()
                     .map(Transaction::getTrader)
                     .filter(trader -> trader.getCity().equals("Milan"))
-                    .forEach(trader -> trader.setCity("Cambridge"));
-        System.out.println(transactions);
+                    .forEach(trader -> trader.setCity(cityName));
+
+        System.out.println("transactions:\n"+transactions);
         
         
         // Query 7: What's the highest value in all the transactions?
@@ -85,6 +85,6 @@ public class PuttingIntoPractice{
             transactions.stream()
                         .map(Transaction::getValue)
                         .reduce(0, Integer::max);
-        System.out.println(highestValue);      
+        System.out.println("highestValue:\n"+highestValue);
     }
 }

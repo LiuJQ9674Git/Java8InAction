@@ -38,7 +38,12 @@ public class Dish {
 
     @Override
     public String toString() {
-        return name;
+        return "Dish{" +
+                "name='" + name + '\'' +
+                ", vegetarian=" + vegetarian +
+                ", calories=" + calories +
+                ", type=" + type +
+                '}';
     }
 
     public static final List<Dish> menu =
@@ -50,7 +55,9 @@ public class Dish {
                     new Dish("season fruit", true, 120, Dish.Type.OTHER),
                     new Dish("pizza", true, 550, Dish.Type.OTHER),
                     new Dish("prawns", false, 400, Dish.Type.FISH),
-                    new Dish("salmon", false, 450, Dish.Type.FISH));
+                    new Dish("salmon", false, 450, Dish.Type.FISH),
+                    new Dish("salmon", false, 490, Dish.Type.FISH)
+            );
 
     public static final Map<String, List<String>> dishTags = new HashMap<>();
 

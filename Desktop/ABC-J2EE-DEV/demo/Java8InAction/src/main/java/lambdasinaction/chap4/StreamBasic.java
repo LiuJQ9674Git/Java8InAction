@@ -31,7 +31,7 @@ public class StreamBasic {
         List<String> threeHighCaloricDishNames =
                 menu.stream()//建立操作流水线
                         .filter(d -> d.getCalories() > 300)//首先选出高热量的 菜肴
-                        .map(Dish::getName)//获取菜名
+                        .map(Dish::getName)//获取菜名，从对象Dish转换为String
                         .limit(3)//只选择头三个
                         .collect(toList());
         //[pork, beef, chicken]
